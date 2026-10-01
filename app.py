@@ -3,7 +3,7 @@ import streamlit as st
 st.title("TMB - Objectes perduts")
 st.write("Formulari per registrar una reclamació d'un objecte perdut.")
 
-with st.form("lost_object_form"):
+
 
     # -------------------------
     # DADES DE LA PÈRDUA
@@ -36,14 +36,16 @@ with st.form("lost_object_form"):
             ]
         )
 
-    anonymity_level = st.selectbox(
-        "Grau d'anonimat",
-        [
-            "Identificat",
-            "Anònim"
-        ]
-    )
+    # anonymity_level = st.selectbox(
+     #   "Grau d'anonimat",
+      #   [
+       #      "Identificat",
+       #      "Anònim"
+       #  ]
+    # )
 
+with st.form("lost_object_form"):
+    
     # -------------------------
     # CARACTERÍSTIQUES OBJECTE
     # -------------------------
