@@ -5,7 +5,7 @@ st.write("Formulari per registrar una reclamació d'un objecte perdut.")
 
 
 # Tot el formulari s'ha d'obrir AQUÍ
-with st.form("lost_object_form"):
+#with st.form("lost_object_form"):
     
     # -------------------------
     # DADES DE LA PÈRDUA
