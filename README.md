@@ -1,5 +1,4 @@
-15. Orden exacto en el que lo haría
-No intentéis hacerlo todo simultáneamente. Yo seguiría exactamente este orden:
+
 1. Crear repositorio GitHub vacío y añadir a los tres.
 2. Crear app.py y hacer que aparezca vuestro formulario con Streamlit.
 3. Crear proyecto Supabase.
