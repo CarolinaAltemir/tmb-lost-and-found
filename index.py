@@ -8,16 +8,16 @@ if "pagina" not in st.session_state:
     st.session_state["pagina"] = "inici"
 
 if st.session_state["pagina"] == "inici":
-    st.title("🚌 TMB - Objectes Perduts")
+    st.title("TMB - Objectes Perduts")
     
     col1, col2 = st.columns(2)
     with col1:
-        if st.button("📝 Anar al Formulari", use_container_width=True):
+        if st.button("Anar al Formulari", use_container_width=True):
             st.session_state["pagina"] = "app2form"
             st.rerun()
             
     with col2:
-        if st.button("📍 Anar al Tracking", use_container_width=True):
+        if st.button("Anar al Tracking", use_container_width=True):
             st.session_state["pagina"] = "tracking"
             st.rerun()
 
