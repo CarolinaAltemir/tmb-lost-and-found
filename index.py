@@ -2,7 +2,7 @@ import streamlit as st
 
 # Importar funciones de otros ficheros .py
 from app2form import mostrar_formulari
-from tracking import mostrar_tracking
+from trackingsup import mostrar_tracking
 
 if "pagina" not in st.session_state:
     st.session_state["pagina"] = "inici"
@@ -18,7 +18,7 @@ if st.session_state["pagina"] == "inici":
             
     with col2:
         if st.button("Anar al Tracking", use_container_width=True):
-            st.session_state["pagina"] = "tracking"
+            st.session_state["pagina"] = "trackingsup"
             st.rerun()
 
 elif st.session_state["pagina"] == "app2form":
@@ -27,7 +27,7 @@ elif st.session_state["pagina"] == "app2form":
         st.rerun()
     mostrar_formulari()  # Cridem la funció del fitxer formulari.py
 
-elif st.session_state["pagina"] == "tracking":
+elif st.session_state["pagina"] == "trackingsup":
     if st.button("⬅️ Tornar a l'Inici"):
         st.session_state["pagina"] = "inici"
         st.rerun()
