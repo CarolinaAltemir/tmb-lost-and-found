@@ -12,7 +12,7 @@ supabase = init_supabase()
 
 def mostrar_tracking():
     st.title("Seguiment del teu Objecte Perdut")
-    st.write("Introdueix l'identificador de la teva sol·licitud o el teu correu.")
+    st.write("Introdueix l'identificador de la teva sol·licitud")
 
     # Entrada per a l'ID
     search_input = st.text_input("Identificador:", placeholder="Ex: REQ-101")
@@ -48,9 +48,9 @@ def mostrar_tracking():
             fase = 1  # S'ha fet el match amb l'objecte trobat
             #if sack_id:
                 # Opcional: consultar l'estat de la saca a la taula 'sacks'
-                sack_res = supabase.table("sacks").select("status").eq("id", sack_id).execute()
+              #  sack_res = supabase.table("sacks").select("status").eq("id", sack_id).execute()
             #    if sack_res.data:
-                    estat_saca = sack_res.data[0].get("status")
+               #     estat_saca = sack_res.data[0].get("status")
                #     if estat_saca == "en_transit":
                #         fase = 2
                 #    elif estat_saca == "arribat":
