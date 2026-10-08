@@ -113,40 +113,38 @@ if submitted:
     elif not consent:
         st.error("Cal donar consentiment per conservar la sol·licitud.")
     else:
-    # Generem un codi de seguiment aleatori de 8 dígits
-    tracking_code = str(
-        secrets.randbelow(90_000_000) + 10_000_000
-    )
-
-    # Preparem les dades amb els mateixos noms
-    # que les columnes de Supabase
-    registre = {
-        "tracking_code": tracking_code,
-        "loss_date": loss_date.isoformat(),
-        "transport": transport,
-        "lines": linies_canoniques,
-        "category": cat_castella,
-        "subcategory": subcategory,
-        "colors": colors_canonics,
-        "brand": brand.strip() if brand.strip() else None,
-        "description": description.strip() if description.strip() else None,
-        "photo_path": None,
-        "tags": tags,
-        "contact_email": contact_email.strip(),
-        "contact_phone": contact_phone.strip(),
-        "consent": consent,
-        "status": "received"
-    }
-
-    try:
-        supabase.table("lost_requests").insert(registre).execute()
-
-        st.success("Sol·licitud registrada correctament!")
-
-        st.info(
-            f"El teu número de seguiment és: **{tracking_code}**"
+        # Generem un codi de seguiment aleatori de 8 dígits
+        tracking_code = str(
+            secrets.randbelow(90_000_000) + 10_000_000
         )
 
-    except Exception as e:
-        st.error("No s'ha pogut guardar la sol·licitud.")
-        st.write(e)
+        registre = {
+            "tracking_code": tracking_code,
+            "loss_date": loss_date.isoformat(),
+            "transport": transport,
+            "lines": linies_canoniques,
+            "category": category,
+            "subcategory": subcategory,
+            "colors": colors_selected,
+            "brand": brand.strip() if brand.strip() else None,
+            "description": description.strip() if description.strip() else None,
+            "photo_path": None,
+            "tags": tags,
+            "contact_email": contact_email.strip(),
+            "contact_phone": contact_phone.strip(),
+            "consent": consent,
+            "status": "received"
+        }
+
+        try:
+            supabase.table("lost_requests").insert(registre).execute()
+
+            st.success("Sol·licitud registrada correctament!")
+
+            st.info(
+                f"El teu número de seguiment és: **{tracking_code}**"
+            )
+
+        except Exception as e:
+            st.error("No s'ha pogut guardar la sol·licitud.")
+            st.write(e)
