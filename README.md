@@ -26,3 +26,12 @@ app.py recoge esos valores
 Python los manda a Supabase
         ↓
 Supabase crea una nueva fila en lost_requests
+
+
+SUPABASE / PostgreSQL
+│
+├── lost_items      ← formulario de los clientes
+│
+├── found_items     ← objetos encontrados por TMB / análisis de imagen
+│
+└── matches         ← más adelante: relación lost ↔ found
