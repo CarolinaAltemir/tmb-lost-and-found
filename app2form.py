@@ -1,7 +1,7 @@
 import streamlit as st
 
-st.title("TMB - Objectes perduts")
-st.write("Formulari per registrar una reclamació d'un objecte perdut.")
+def mostrar_formulari():
+st.title("Formulari per registrar una reclamació d'un objecte perdut")
 
 # Tot el formulari s'ha d'obrir AQUÍ
 with st.form("lost_object_form"):
