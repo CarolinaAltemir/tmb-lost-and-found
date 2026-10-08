@@ -9,7 +9,17 @@ st.set_page_config(
     page_icon="🧳",
     layout="centered"
 )
+# -------------------------------------------------------------
+# CONNEXIÓ AMB SUPABASE
+# -------------------------------------------------------------
+@st.cache_resource
+def connectar_supabase():
+    return create_client(
+        st.secrets["SUPABASE_URL"],
+        st.secrets["SUPABASE_KEY"]
+    )
 
+supabase = connectar_supabase()
 # -------------------------------------------------------------
 # CARREGAR DADES
 # -------------------------------------------------------------
