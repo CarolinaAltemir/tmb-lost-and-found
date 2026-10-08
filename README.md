@@ -13,3 +13,16 @@
 12. Desplegar la web desde GitHub.
 13. Crear 50-100 objetos ficticios y probar que todo se guarda correctamente.
 14. Después empezar el matching con el otro grupo.
+
+
+Como se conectan:
+
+Usuario rellena formulario
+        ↓
+Pulsa "Enviar"
+        ↓
+app.py recoge esos valores
+        ↓
+Python los manda a Supabase
+        ↓
+Supabase crea una nueva fila en lost_requests
