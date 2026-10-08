@@ -4,8 +4,8 @@ from supabase import create_client, Client
 # 1. Connexió a Supabase usant les dades de secrets.toml
 @st.cache_resource
 def init_supabase() -> Client:
-    url = st.secrets["https://cmprnzcskfzmqpbrwise.supabase.co/rest/v1/"]
-    key = st.secrets["eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNtcHJuemNza2Z6bXFwYnJ3aXNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA4NTIwMTgsImV4cCI6MjEwNjQyODAxOH0.pDnlSlg4s1T7177nwjLHCJSlTCC3Fcd5PIhcSSPcLE8"]
+    url = st.secrets["SUPABASE_URL"]
+    key = st.secrets["SUPABASE_KEY"]
     return create_client(url, key)
 
 supabase = init_supabase()
@@ -44,7 +44,7 @@ def mostrar_tracking():
         
         # 5. Determinar la fase del seguiment
         fase = 0
-        if taking_code:
+        if found_object_id:
             fase = 1  # S'ha fet el match amb l'objecte trobat
             #if sack_id:
                 # Opcional: consultar l'estat de la saca a la taula 'sacks'
@@ -59,7 +59,7 @@ def mostrar_tracking():
           fase = 0
 
         if fase == 1:
-            st.success(f"🎉 **Match trobat!** L'objecte s'ha associat amb el codi: `{taking_code}`")
+            st.success(f"🎉 **Match trobat!** L'objecte s'ha associat amb el codi: `{found_object_id}`")
         else:
             st.info("🔍 **Cercant coincidències...** Encara no s'ha trobat cap objecte assignat a la teva sol·licitud.")
         # 6. Dibuixar l'estat o línia de temps
