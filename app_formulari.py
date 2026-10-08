@@ -12,14 +12,23 @@ st.set_page_config(
 # -------------------------------------------------------------
 # CONNEXIÓ AMB SUPABASE
 # -------------------------------------------------------------
-@st.cache_resource
-def connectar_supabase():
-    return create_client(
-        st.secrets["SUPABASE_URL"],
-        st.secrets["SUPABASE_KEY"]
-    )
+supabase_url = st.secrets["SUPABASE_URL"].strip().rstrip("/")
 
-supabase = connectar_supabase()
+# Per si s'ha copiat accidentalment la URL de la REST API
+if "/rest/v1" in supabase_url:
+    supabase_url = supabase_url.split("/rest/v1")[0]
+
+supabase_key = st.secrets["SUPABASE_KEY"].strip()
+
+supabase = create_client(
+    supabase_url,
+    supabase_key
+)
+
+# TEMPORAL: només per comprovar la URL
+st.caption(f"Supabase connectat a: {supabase_url}")
+
+
 # -------------------------------------------------------------
 # CARREGAR DADES
 # -------------------------------------------------------------
