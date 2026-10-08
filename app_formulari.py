@@ -1,6 +1,8 @@
 import json
 from pathlib import Path
+import secrets
 import streamlit as st
+from supabase import create_client
 
 st.set_page_config(
     page_title="TMB - Objectes perduts",
