@@ -1,29 +1,17 @@
 import json
 from pathlib import Path
 import streamlit as st
-from supabase import create_client, Client
+from supabase import create_client
 
-# Configurar la pàgina AL PRINCIPI DE TOT
-st.set_page_config(
-    page_title="TMB - Objectes Perduts",
-    page_icon="🧳",
-    layout="centered"
-)
-
-# -------------------------------------------------------------
-# CONNEXIÓ AMB SUPABASE (Compartida)
-# -------------------------------------------------------------
 @st.cache_resource
-def init_supabase() -> Client:
-    url = st.secrets["SUPABASE_URL"]
-    key = st.secrets["SUPABASE_KEY"]
-    return create_client(url, key)
+def connectar_supabase():
+    return create_client(
+        st.secrets["SUPABASE_URL"],
+        st.secrets["SUPABASE_KEY"]
+    )
 
-supabase = init_supabase()
+supabase = connectar_supabase()
 
-# -------------------------------------------------------------
-# CARREGAR CATÀLEG (Per al formulari)
-# -------------------------------------------------------------
 @st.cache_data
 def carregar_cataleg():
     ruta = Path(__file__).parent / "cataleg.json"
@@ -32,7 +20,6 @@ def carregar_cataleg():
 
 data = carregar_cataleg()
 
-# Línies de transport i taxonomia
 lineas = data.get("transporte", {}).get("lineas", [])
 METRO_LINES = [l["id"] for l in lineas if l.get("medio") == "metro" and l.get("activa", True)]
 BUS_LINES = [l["nombre"] for l in lineas if l.get("medio") == "bus" and l.get("activa", True)]
@@ -43,9 +30,6 @@ TAXONOMIA = {
     for cat in data.get("categorias", [])
 }
 
-# -------------------------------------------------------------
-# 1. FUNCIÓ FORMULARI
-# -------------------------------------------------------------
 def mostrar_formulari():
     st.title("TMB - Objectes perduts")
     st.write("Formulari per registrar una reclamació d'un objecte perdut a la xarxa de TMB.")
@@ -112,63 +96,15 @@ def mostrar_formulari():
             st.error("Cal donar consentiment per conservar la sol·licitud.")
         else:
             registre = {
-                "categoria": category,
-                "subcategoria": subcategory,
+                "category": category,
+                "subcategory": subcategory,
                 "colors": colors_selected,
-                "marca": brand.strip() if brand.strip() else None,
-                "detalls": detalls_finals,
-                "linia": linies_canoniques,
-                "dia_de_perdua": str(loss_date),
-                "contacte": {
-                    "email": contact_email.strip(),
-                    "telefon": contact_phone.strip()
-                }
+                "brand": brand.strip() if brand.strip() else None,
+                "details": detalls_finals,
+                "lines": linies_canoniques,
+                "loss_date": str(loss_date),
+                "email": contact_email.strip(),
+                "phone": contact_phone.strip()
             }
             st.success("Sol·licitud registrada correctament!")
             st.json(registre)
-
-# -------------------------------------------------------------
-# 2. FUNCIÓ TRACKING
-# -------------------------------------------------------------
-def mostrar_tracking():
-    st.title("Seguiment del teu Objecte Perdut")
-    st.write("Introdueix l'identificador de la teva sol·licitud.")
-
-    search_input = st.text_input("Identificador:", placeholder="Ex: 1")
-
-    if st.button("Buscar sol·licitud", type="primary"):
-        if not search_input.strip():
-            st.warning("⚠️ Per favor, escriu un identificador vàlid.")
-            return
-
-        with st.spinner("Comprovant identificador a la base de dades..."):
-            response = supabase.table("lost_requests") \
-                .select("*") \
-                .eq("id", search_input.strip()) \
-                .execute()
-
-        if not response.data or len(response.data) == 0:
-            st.error(f"❌ L'identificador **'{search_input}'** no existeix a la nostra base de dades.")
-            return
-
-        sollicitud = response.data[0]
-        st.success(f"✅ Sol·licitud trobada: `{sollicitud['id']}`")
-
-        found_object_id = sollicitud.get("taking_code")
-
-        if found_object_id:
-            fase = 1
-            st.success(f"🎉 **Match trobat!** L'objecte s'ha associat amb el codi: `{found_object_id}`")
-        else:
-            fase = 0
-            st.info("🔍 **Cercant coincidències...** Encara no s'ha trobat cap objecte assignat a la teva sol·licitud.")
-
-# -------------------------------------------------------------
-# MENÚ PRINCIPAL
-# -------------------------------------------------------------
-opcio = st.sidebar.radio("Navegació", ["Registrar Pèrdua", "Seguiment de Sol·licitud"])
-
-if opcio == "Registrar Pèrdua":
-    mostrar_formulari()
-else:
-    mostrar_tracking()
