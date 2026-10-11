@@ -1,17 +1,28 @@
 import json
 from pathlib import Path
+import secrets
 import streamlit as st
 from supabase import create_client
 
-@st.cache_resource
-def connectar_supabase():
-    return create_client(
-        st.secrets["SUPABASE_URL"],
-        st.secrets["SUPABASE_KEY"]
-    )
+# -------------------------------------------------------------
+# CONNEXIÓ AMB SUPABASE
+# -------------------------------------------------------------
+supabase_url = st.secrets["SUPABASE_URL"].strip().rstrip("/")
 
-supabase = connectar_supabase()
+# Per si s'ha copiat accidentalment la URL de la REST API
+if "/rest/v1" in supabase_url:
+    supabase_url = supabase_url.split("/rest/v1")[0]
 
+supabase_key = st.secrets["SUPABASE_KEY"].strip()
+
+supabase = create_client(
+    supabase_url,
+    supabase_key
+)
+
+# -------------------------------------------------------------
+# CARREGAR DADES
+# -------------------------------------------------------------
 @st.cache_data
 def carregar_cataleg():
     ruta = Path(__file__).parent / "cataleg.json"
@@ -20,17 +31,25 @@ def carregar_cataleg():
 
 data = carregar_cataleg()
 
+# Línies de transport
 lineas = data.get("transporte", {}).get("lineas", [])
 METRO_LINES = [l["id"] for l in lineas if l.get("medio") == "metro" and l.get("activa", True)]
 BUS_LINES = [l["nombre"] for l in lineas if l.get("medio") == "bus" and l.get("activa", True)]
 
+# Taxonomia directa del JSON
 subcats_comunes = data.get("subcategories_comunes", ["Altres", "No identificable"])
 TAXONOMIA = {
     cat["nombre"]: cat.get("subcategorias", []) + [s for s in subcats_comunes if s not in cat.get("subcategorias", [])]
     for cat in data.get("categorias", [])
 }
 
+# -------------------------------------------------------------
+# FORMULARI
+# -------------------------------------------------------------
 def mostrar_formulari():
+    # TEMPORAL: només per comprovar la URL
+    st.caption(f"Supabase connectat a: {supabase_url}")
+
     st.title("TMB - Objectes perduts")
     st.write("Formulari per registrar una reclamació d'un objecte perdut a la xarxa de TMB.")
 
@@ -78,6 +97,9 @@ def mostrar_formulari():
 
     submitted = st.button("Enviar sol·licitud", type="primary")
 
+    # -------------------------------------------------------------
+    # ENVIAMENT
+    # -------------------------------------------------------------
     if submitted:
         detalls_parts = []
         if tags:
@@ -95,16 +117,38 @@ def mostrar_formulari():
         elif not consent:
             st.error("Cal donar consentiment per conservar la sol·licitud.")
         else:
+            # Generem un codi de seguiment aleatori de 8 dígits
+            tracking_code = str(
+                secrets.randbelow(90_000_000) + 10_000_000
+            )
+
             registre = {
+                "tracking_code": tracking_code,
+                "loss_date": loss_date.isoformat(),
+                "transport": transport,
+                "lines": linies_canoniques,
                 "category": category,
                 "subcategory": subcategory,
                 "colors": colors_selected,
                 "brand": brand.strip() if brand.strip() else None,
-                "details": detalls_finals,
-                "lines": linies_canoniques,
-                "loss_date": str(loss_date),
-                "email": contact_email.strip(),
-                "phone": contact_phone.strip()
+                "description": description.strip() if description.strip() else None,
+                "photo_path": None,
+                "tags": tags,
+                "contact_email": contact_email.strip(),
+                "contact_phone": contact_phone.strip(),
+                "consent": consent,
+                "status": "received"
             }
-            st.success("Sol·licitud registrada correctament!")
-            st.json(registre)
+
+            try:
+                supabase.table("lost_requests").insert(registre).execute()
+
+                st.success("Sol·licitud registrada correctament!")
+
+                st.info(
+                    f"El teu número de seguiment és: **{tracking_code}**"
+                )
+
+            except Exception as e:
+                st.error("No s'ha pogut guardar la sol·licitud.")
+                st.write(e)
