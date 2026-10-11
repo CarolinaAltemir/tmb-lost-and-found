@@ -123,7 +123,7 @@ def mostrar_formulari():
             )
 
             registre = {
-                "tracking_code": tracking_code,
+                "taking_code": tracking_code,
                 "loss_date": loss_date.isoformat(),
                 "transport": transport,
                 "lines": linies_canoniques,
@@ -132,9 +132,9 @@ def mostrar_formulari():
                 "color": colors_selected,
                 "brand": brand.strip() if brand.strip() else None,
                 "description": description.strip() if description.strip() else None,
-                "photo_path": None,
+                "photo_url": None,
                 "tags": tags,
-                "contact_email": contact_email.strip(),
+                "contact": contact_email.strip(),
                 "contact_phone": contact_phone.strip(),
                 "consent": consent,
                 "status": "received"
