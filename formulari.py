@@ -129,7 +129,7 @@ def mostrar_formulari():
                 "lines": linies_canoniques,
                 "category": category,
                 "subcategory": subcategory,
-                "colors": colors_selected,
+                "color": colors_selected,
                 "brand": brand.strip() if brand.strip() else None,
                 "description": description.strip() if description.strip() else None,
                 "photo_path": None,
