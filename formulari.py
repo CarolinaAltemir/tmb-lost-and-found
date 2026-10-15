@@ -727,7 +727,8 @@ def mostrar_formulari():
                 correu_enviat = enviar_email_confirmacio(email_1, tracking_code)
 
             if correu_enviat:
-                st.success(f"s'ha enviat un correu de confirmació a **{email_1}** amb el número de seguiment.")
+                st.success(f"S'ha enviat un correu de confirmació a **{email_1}** amb el número de seguiment."
+                f"*(Si no el trobes a la safata d'entrada, revisa la carpeta de correu brossa o Spam)*.")
 
         except Exception as e:
 
