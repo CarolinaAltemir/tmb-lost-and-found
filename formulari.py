@@ -132,7 +132,7 @@ def enviar_email_confirmacio(destinatari_email, tracking_code):
     try:
         smtp_server = "smtp.gmail.com"
         smtp_port = 587
-        app_url = "https://tmb-maria.streamlit.app"
+        app_url = "https://tmb-lost-and-found-b2tajzh2jib3hzdg8t8hsc.streamlit.app"
 
         msg = MIMEMultipart("alternative")
         msg["Subject"] = f"TMB - Confirmació de sol·licitud ({tracking_code})"
@@ -153,7 +153,7 @@ def enviar_email_confirmacio(destinatari_email, tracking_code):
               <p>Pots comprovar l'estat de la teva sol·licitud a la nostra plataforma:</p>
               <p style="text-align: center; margin: 30px 0;">
                 <a href="{app_url}" style="background-color: #d32f2f; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;">
-                  Anar al Seguiment de la Sol·licitud
+                  TMB - Objectes Perduts
                 </a>
               </p>
             </div>
