@@ -115,30 +115,30 @@ def telefon_valid(telefon):
 
 def enviar_email_confirmacio(destinatari_email, tracking_code):
     """
-    Envia un correu electrònic a l'usuari amb el número de seguiment
-    i l'enllaç per consultar l'estat de la seva sol·licitud.
+    Envia un correu electrònic a l'usuari amb el número de seguiment.
+    Mostra l'error detallat en cas de fallada.
     """
+    # 1. Comprovació de Secrets
+    sender_email = st.secrets.get("SMTP_EMAIL", "")
+    sender_password = st.secrets.get("SMTP_PASSWORD", "")
+
+    if not sender_email:
+        st.error("❌ Error als Secrets: No s'ha trobat 'SMTP_EMAIL'. Revisa el fitxer secrets.toml.")
+        return False
+    if not sender_password:
+        st.error("❌ Error als Secrets: No s'ha trobat 'SMTP_PASSWORD'. Revisa el fitxer secrets.toml.")
+        return False
+
     try:
-        # Credencials del servidor des d'on s'envia el missatge (configurat als secrets)
         smtp_server = "smtp.gmail.com"
         smtp_port = 587
-        sender_email = st.secrets.get("SMTP_EMAIL", "")
-        sender_password = st.secrets.get("SMTP_PASSWORD", "")
+        app_url = "https://tmb-maria.streamlit.app"
 
-        if not sender_email or not sender_password:
-            # Si no s'han configurat les claus de correu als secrets, no s'envia però no trencem l'app
-            return False
-
-        # URL de l'aplicació per fer el seguiment
-        app_url = "https://tmb-maria.streamlit.app"  # O el teu domini real a Streamlit Cloud
-
-        # Creació de l'estructura del correu
         msg = MIMEMultipart("alternative")
         msg["Subject"] = f"TMB - Confirmació de sol·licitud ({tracking_code})"
         msg["From"] = f"TMB Objectes Perduts <{sender_email}>"
         msg["To"] = destinatari_email
 
-        # Cos del missatge en HTML
         html_content = f"""
         <html>
           <body style="font-family: Arial, sans-serif; color: #333333; line-height: 1.6;">
@@ -146,32 +146,23 @@ def enviar_email_confirmacio(destinatari_email, tracking_code):
               <h2 style="color: #d32f2f;">TMB - Registre d'Objecte Perdut</h2>
               <p>Hola,</p>
               <p>Hem rebut correctament la teva sol·licitud per a la localització d'un objecte perdut a la xarxa de TMB.</p>
-              
               <div style="background-color: #f9f9f9; padding: 15px; border-left: 4px solid #d32f2f; margin: 20px 0;">
                 <p style="margin: 0; font-size: 14px; color: #666666;">El teu número de seguiment és:</p>
                 <h3 style="margin: 5px 0 0 0; color: #111111; font-size: 24px;">{tracking_code}</h3>
               </div>
-
-              <p>Pots comprovar l'estat de la teva sol·licitud en qualsevol moment utilitzant aquest número a la nostra plataforma:</p>
-              
+              <p>Pots comprovar l'estat de la teva sol·licitud a la nostra plataforma:</p>
               <p style="text-align: center; margin: 30px 0;">
                 <a href="{app_url}" style="background-color: #d32f2f; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;">
                   Anar al Seguiment de la Sol·licitud
                 </a>
               </p>
-
-              <hr style="border: none; border-top: 1px solid #eeeeee; margin: 20px 0;">
-              <p style="font-size: 12px; color: #888888;">
-                Aquest correu s'ha generat automàticament. Si us plau, no responguis directament a aquest missatge.
-              </p>
             </div>
           </body>
         </html>
         """
-
         msg.attach(MIMEText(html_content, "html"))
 
-        # Enviament del correu
+        # Connexió SMTP
         server = smtplib.SMTP(smtp_server, smtp_port)
         server.starttls()
         server.login(sender_email, sender_password)
@@ -180,7 +171,8 @@ def enviar_email_confirmacio(destinatari_email, tracking_code):
         return True
 
     except Exception as e:
-        st.warning(f"No s'ha pogut enviar el correu de confirmació: {e}")
+        # Mostrem l'error exacte en vermell a la pantalla
+        st.error(f"❌ Error de connexió/enviament SMTP: {e}")
         return False
 
 # -------------------------------------------------------------
