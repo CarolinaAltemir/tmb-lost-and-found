@@ -2,7 +2,7 @@ from pathlib import Path
 import streamlit as st
 
 def mostrar_ajuda():
-    st.subheader("ℹ️ Com funciona el servei d'Objectes Perduts?")
+    st.subheader("Com funciona el servei d'Objectes Perduts?")
     st.write("Consulta el recorregut d'un objecte perdut des que es perd fins que es retorna al client.")
 
     # Ruta de la imatge de la infografia
