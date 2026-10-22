@@ -665,7 +665,7 @@ def mostrar_formulari():
             "subcategory":
                 subcategory,
 
-            "color":
+            "colors":
                 colors_selected,
 
             "brand":
