@@ -6,7 +6,7 @@ def mostrar_ajuda():
     st.write("Consulta el recorregut d'un objecte perdut des que es perd fins que es retorna al client.")
 
     # Ruta de la imatge de la infografia
-    ruta_imatge = Path(__file__).parent / "App Steps and FAQ Poster - Imatge.png"
+    ruta_imatge = Path(__file__).parent / "App Steps and FAQ Poster Bo.png"
 
     if ruta_imatge.exists():
         st.image(
