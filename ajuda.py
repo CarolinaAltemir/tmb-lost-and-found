@@ -7,7 +7,7 @@ def mostrar_ajuda():
     st.write("Consulta el recorregut d'un objecte perdut des que es perd fins que es retorna al client.")
 
     # Ruta del PDF de la infografia
-    ruta_pdf = Path(__file__).parent / "App Steps and FAQ Poster.pdf"
+    ruta_pdf = Path(__file__).parent / "App Steps and FAQ Poster - Imatge.png"
 
     if ruta_pdf.exists():
         with open(ruta_pdf, "rb") as f:
